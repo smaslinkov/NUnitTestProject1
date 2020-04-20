@@ -14,17 +14,6 @@ namespace SpeedyTestProject1
     public class Tests
     {
 
-     /*   private static IEnumerable<NUnitTestProject1.All> Data()
-        {
-            return new List<NUnitTestProject1.All>
-            {
-                new All{Id = 1, Cases= 1, Date = DateTime.Now, Deaths= 0, Recovered=0},
-                new All{Id = 2, Cases= 2, Date = DateTime.Now, Deaths= 1, Recovered=1},
-                new All{Id = 3, Cases= 3, Date = DateTime.Now, Deaths= 1, Recovered=2}
-            };
-        }*/
-
-
         IWebDriver driver = new ChromeDriver();
 
         
@@ -110,7 +99,7 @@ namespace SpeedyTestProject1
             ws1.Cell(2, 10).Value = price;
 
             workbook.SaveAs(fileName);
-
+            
 
         }
 
@@ -210,7 +199,7 @@ namespace SpeedyTestProject1
 
             Console.WriteLine(price);
 
-
+            
         }
 
         [Test]
@@ -326,7 +315,7 @@ namespace SpeedyTestProject1
             ws1.Cell(3, 10).Value = price;
 
             workbook.SaveAs(fileName);
-
+            driver.Close();
 
         }
 
@@ -375,7 +364,7 @@ namespace SpeedyTestProject1
             Assert.AreEqual(alertcontent, "Изберете населенo място за ПОДАТЕЛ");
 
             alert.Accept();
-
+            
         }
 
         [Test]
@@ -429,7 +418,7 @@ namespace SpeedyTestProject1
             Assert.AreEqual(alertcontent, "Изберете населенo място за ПОЛУЧАТЕЛ");
 
             alert.Accept();
-
+            
         }
 
 

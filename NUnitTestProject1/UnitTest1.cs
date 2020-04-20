@@ -115,7 +115,7 @@ namespace SpeedyTestProject1
         }
 
         [Test]
-        public void Test2_InputCorrectDataForPalletAndSelectTypeBasedOnInput()
+        public void Test2_InputCorrectDataForPackageAndSelectTypeBasedOnInput()
         {
 
             var fileName = Path.Combine(Environment.CurrentDirectory, "Data\\speedy.xlsx");

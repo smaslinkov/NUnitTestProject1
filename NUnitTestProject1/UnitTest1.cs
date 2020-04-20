@@ -14,104 +14,112 @@ namespace SpeedyTestProject1
     public class Tests
     {
 
-     /*   private static IEnumerable<NUnitTestProject1.All> Data()
-        {
-            return new List<NUnitTestProject1.All>
-            {
-                new All{Id = 1, Cases= 1, Date = DateTime.Now, Deaths= 0, Recovered=0},
-                new All{Id = 2, Cases= 2, Date = DateTime.Now, Deaths= 1, Recovered=1},
-                new All{Id = 3, Cases= 3, Date = DateTime.Now, Deaths= 1, Recovered=2}
-            };
-        }*/
+        /*   private static IEnumerable<NUnitTestProject1.All> Data()
+           {
+               return new List<NUnitTestProject1.All>
+               {
+                   new All{Id = 1, Cases= 1, Date = DateTime.Now, Deaths= 0, Recovered=0},
+                   new All{Id = 2, Cases= 2, Date = DateTime.Now, Deaths= 1, Recovered=1},
+                   new All{Id = 3, Cases= 3, Date = DateTime.Now, Deaths= 1, Recovered=2}
+               };
+           }*/
 
 
         IWebDriver driver = new ChromeDriver();
 
-        
+
         [SetUp]
         public void Setup()
         {
             driver.Navigate().GoToUrl("https://services.speedy.bg/calculate/");
-            
+
             Console.WriteLine("Opened Speedy.bg/calculate/");
-            
+
         }
 
-        
+
         [Test]
         public void Test1_InputCorrectDataForDocumentsPackageAndReturnPrice()
         {
-
+            //Ако го няма файла ще дава грешка затова try-catch блок
             var fileName = Path.Combine(Environment.CurrentDirectory, "Data\\speedy.xlsx");
-            var workbook = new XLWorkbook(fileName);
-            var ws1 = workbook.Worksheet(1);
-            int iRow = 1;
-            while (!ws1.Cell(iRow, 1).IsEmpty())
+            var filepath = @"C:\Users\georgiem\source\repos\NUnitTestProject1\NUnitTestProject1\Data\";
+            fileName = Path.Combine(filepath, "speedy.xlsx");
+            try
             {
-                var row = "";
-                int iColumn = 1;
-                while (!ws1.Cell(iRow, iColumn).IsEmpty())
+                var workbook = new XLWorkbook(fileName);
+                var ws1 = workbook.Worksheet(1);
+                int iRow = 1;
+                while (!ws1.Cell(iRow, 1).IsEmpty())
                 {
-                    row = row + ws1.Cell(iRow, iColumn).Value.ToString() + ",";
-                    //string tempValue = ws1.Cell(iRow, iColumn).Value.ToString();
-                    //Console.OutputEncoding = Encoding.UTF8;
-                    //Console.WriteLine(ws1.Cell(iRow, iColumn).Value);
-                    iColumn++;
+                    var row = "";
+                    int iColumn = 1;
+                    while (!ws1.Cell(iRow, iColumn).IsEmpty())
+                    {
+                        row = row + ws1.Cell(iRow, iColumn).Value.ToString() + ",";
+                        //string tempValue = ws1.Cell(iRow, iColumn).Value.ToString();
+                        //Console.OutputEncoding = Encoding.UTF8;
+                        //Console.WriteLine(ws1.Cell(iRow, iColumn).Value);
+                        iColumn++;
+                    }
+                    //Console.WriteLine(row);
+                    iRow++;
                 }
-                //Console.WriteLine(row);
-                iRow++;
+
+                string sAddress = ws1.Cell(2, 1).Value.ToString();
+                string rAddress = ws1.Cell(2, 2).Value.ToString();
+
+                IWebElement senderAddress = driver.FindElement(By.Id("sndrSiteName"));
+                senderAddress.SendKeys(sAddress);
+                System.Threading.Thread.Sleep(1500);
+                senderAddress.SendKeys(Keys.Enter);
+
+                System.Threading.Thread.Sleep(1500);
+
+                IWebElement dropToOffice = driver.FindElement(By.Id("dropoffOffice"));
+                dropToOffice.Click();
+
+                System.Threading.Thread.Sleep(1500);
+
+                IWebElement recipientAddres = driver.FindElement(By.Id("rcptSiteName"));
+                recipientAddres.SendKeys(rAddress);
+                System.Threading.Thread.Sleep(1500);
+                recipientAddres.SendKeys(Keys.Enter);
+
+                System.Threading.Thread.Sleep(1500);
+
+                IWebElement pickFromOffice = driver.FindElement(By.Id("pickupOffice"));
+                pickFromOffice.Click();
+
+                System.Threading.Thread.Sleep(1500);
+
+                IWebElement packageType = driver.FindElement(By.Id("packageType"));
+                packageType.Click();
+
+                System.Threading.Thread.Sleep(1500);
+
+                IWebElement isDocuments = driver.FindElement(By.Id("documents"));
+                isDocuments.Click();
+
+                System.Threading.Thread.Sleep(1500);
+
+                IWebElement calculateButton = driver.FindElement(By.CssSelector(".inputButtonCalc"));
+                calculateButton.Click();
+
+                System.Threading.Thread.Sleep(5000);
+
+                IWebElement priceWithVAT = driver.FindElement(By.CssSelector(".tdRight"));
+                string price = priceWithVAT.Text;
+
+                ws1.Cell(2, 10).Value = price;
+
+                workbook.SaveAs(fileName);
             }
 
-            string sAddress = ws1.Cell(2, 1).Value.ToString();
-            string rAddress = ws1.Cell(2, 2).Value.ToString();
-
-            IWebElement senderAddress = driver.FindElement(By.Id("sndrSiteName"));
-            senderAddress.SendKeys(sAddress);
-            System.Threading.Thread.Sleep(1500);
-            senderAddress.SendKeys(Keys.Enter);
-
-            System.Threading.Thread.Sleep(1500);
-
-            IWebElement dropToOffice = driver.FindElement(By.Id("dropoffOffice"));
-            dropToOffice.Click();
-
-            System.Threading.Thread.Sleep(1500);
-
-            IWebElement recipientAddres = driver.FindElement(By.Id("rcptSiteName"));
-            recipientAddres.SendKeys(rAddress);
-            System.Threading.Thread.Sleep(1500);
-            recipientAddres.SendKeys(Keys.Enter);
-
-            System.Threading.Thread.Sleep(1500);
-
-            IWebElement pickFromOffice = driver.FindElement(By.Id("pickupOffice"));
-            pickFromOffice.Click();
-
-            System.Threading.Thread.Sleep(1500);
-
-            IWebElement packageType = driver.FindElement(By.Id("packageType"));
-            packageType.Click();
-
-            System.Threading.Thread.Sleep(1500);
-
-            IWebElement isDocuments = driver.FindElement(By.Id("documents"));
-            isDocuments.Click();
-
-            System.Threading.Thread.Sleep(1500);
-
-            IWebElement calculateButton = driver.FindElement(By.CssSelector(".inputButtonCalc"));
-            calculateButton.Click();
-
-            System.Threading.Thread.Sleep(5000);
-
-            IWebElement priceWithVAT = driver.FindElement(By.CssSelector(".tdRight"));
-            string price = priceWithVAT.Text;
-
-            ws1.Cell(2, 10).Value = price;
-
-            workbook.SaveAs(fileName);
-
-
+            catch (Exception e)
+            {
+                Console.WriteLine("File {0} not found", fileName);
+            }
         }
 
         [Test]
@@ -200,7 +208,7 @@ namespace SpeedyTestProject1
             calculateButton.Click();
 
             System.Threading.Thread.Sleep(5000);
-                        
+
             IWebElement priceWithVAT = driver.FindElement(By.CssSelector(".tdRight"));
             string price = priceWithVAT.Text;
 
@@ -275,26 +283,30 @@ namespace SpeedyTestProject1
 
             string sPalletType = ws1.Cell(3, 8).Value.ToString();
 
-            if (sPalletType == "150") {
+            if (sPalletType == "150")
+            {
 
                 new SelectElement(driver.FindElement(By.Id("baseName"))).SelectByText("150 - Mini Pallet (EUR6) (80 x 60)");
 
-            } if (sPalletType == "250")
+            }
+            if (sPalletType == "250")
             {
 
                 new SelectElement(driver.FindElement(By.Id("baseName"))).SelectByText("250 - Euro Pallet (80 x 120)");
 
-            } if (sPalletType == "350")
-                {
+            }
+            if (sPalletType == "350")
+            {
 
-                    new SelectElement(driver.FindElement(By.Id("baseName"))).SelectByText("350 - Industrial Pallet 100 (EUR3) (100 x 120)");
+                new SelectElement(driver.FindElement(By.Id("baseName"))).SelectByText("350 - Industrial Pallet 100 (EUR3) (100 x 120)");
 
-            } if (sPalletType == "450")
-                {
+            }
+            if (sPalletType == "450")
+            {
 
-                    new SelectElement(driver.FindElement(By.Id("baseName"))).SelectByText("450 - Industrial Pallet 120 (120 x 120)");
+                new SelectElement(driver.FindElement(By.Id("baseName"))).SelectByText("450 - Industrial Pallet 120 (120 x 120)");
 
-                }
+            }
 
 
             System.Threading.Thread.Sleep(1500);
@@ -364,7 +376,7 @@ namespace SpeedyTestProject1
             senderAddress.SendKeys(Keys.Enter);
 
             System.Threading.Thread.Sleep(1500);
-            
+
             IWebElement packageType = driver.FindElement(By.Id("packageType"));
             packageType.Click();
 
